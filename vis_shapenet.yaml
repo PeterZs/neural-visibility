@@ -1,0 +1,101 @@
+SOLVER:
+  # gpu: 1, 2, 7
+  # gpu: 0, 3, 4, 5
+  # gpu: 0, 1, 2, 4
+  gpu: 0, 1, 2, 3
+  # gpu: 5,
+  # run: best_view
+  run: train
+  type: adamw
+  # empty_cache: false
+
+  logdir: logs/depth8
+  max_epoch: 50
+  test_every_epoch: 5
+  clip_grad: 1.0
+  lr_type: step
+  milestones: (15,30)
+  ckpt_num: 20
+  port: 12355
+  lr: 0.0001
+  weight_decay: 0.00001
+
+DATA:
+  train:
+    # name: shapenet
+
+    # octree building
+    depth: 8
+    full_depth: 2
+
+    # transformation
+    # orient_normal: xyz
+
+    # data augmentations
+    # distort: True
+    # angle: (0, 5, 0)
+    # interval: (1, 1, 1)
+    # scale: 0.25
+    # jitter: 0.25
+    # uniform: True
+
+    # data loading
+    # location: data/ShapeNet/ShapeNet_NV_simplified_with_normal
+    location: data/
+    filelist: data/filelist/train_val.txt
+    batch_size: 2
+    shuffle: True
+    num_workers: 4
+    noise: 0.0
+    missing: False
+    takes: 100000
+    random: True
+
+  test:
+    # name: shapenet
+
+    # octree building
+    depth: 8
+    full_depth: 2
+
+    # transformation
+    # orient_normal: xyz
+
+    # data augmentations
+    # distort: False   # False -> no data augmentation
+    # angle: (0, 5, 0)
+    # interval: (1, 1, 1)
+    # scale: 0.25
+    # jitter: 0.25
+    # uniform: True
+
+    # data loading
+    # location: data/ShapeNet/ShapeNet_NV_simplified_with_normal
+    location: data/
+    filelist: data/filelist/test.txt
+    # filelist: data/ShapeNet/ShapeNet_NV_simplified_with_normal/filelist/best_view.txt
+    batch_size: 4
+    shuffle: False
+    num_workers: 2
+    noise: 0.0
+    takes: 100000
+    missing: False
+    random: False
+
+MODEL:
+  # name: segnet
+  # feature: LP   # N -> Normal(3 channels);
+  #               # D -> Local displacement(1 channel)
+  # upsample: 'nearest'   # The method used for upsampling
+  # interp:   'linear'    # The interplation method: linear or nearest
+  # stages: 7
+  channel: 6
+  vp_ch: 63
+  nout: 2
+  multires: 10
+  feature: LP
+
+
+LOSS:
+  mask: -1
+  num_class: 2
